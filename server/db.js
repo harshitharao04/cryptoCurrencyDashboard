@@ -10,8 +10,25 @@ const defaultDb = {
   portfolios: {},
 };
 
+function loadSeedDb() {
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      const raw = fs.readFileSync(DB_PATH, "utf-8");
+      const parsed = JSON.parse(raw);
+      return {
+        users: Array.isArray(parsed.users) ? parsed.users : [],
+        watchlists: parsed.watchlists && typeof parsed.watchlists === "object" ? parsed.watchlists : {},
+        portfolios: parsed.portfolios && typeof parsed.portfolios === "object" ? parsed.portfolios : {},
+      };
+    }
+  } catch {
+    // Fallback handled below.
+  }
+  return JSON.parse(JSON.stringify(defaultDb));
+}
+
 if (!globalThis.__cryptoDashboardDb) {
-  globalThis.__cryptoDashboardDb = JSON.parse(JSON.stringify(defaultDb));
+  globalThis.__cryptoDashboardDb = loadSeedDb();
 }
 
 function ensureDb() {
