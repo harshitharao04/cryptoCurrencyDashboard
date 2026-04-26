@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = "dev_crypto_secret";
+const JWT_SECRET = process.env.JWT_SECRET || "dev_crypto_secret";
 
 export function signToken(user) {
   return jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, {

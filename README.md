@@ -49,6 +49,35 @@ npm run dev:api
 - **Debugging**: used AI to quickly validate CoinGecko query parameters and edge cases (polling, caching, error fallback).
 - **API handling**: used AI suggestions to make polling more robust (pause on hidden tab, cached fallback) and to structure “component-level states” cleanly.
 
+### Deploy on Vercel (frontend + backend in one project)
+This repo is configured to deploy both:
+- **Frontend** (Vite static build from `dist`)
+- **Backend API** (serverless function at `api/index.js`, routes under `/api/*`)
+
+#### 1) Push to GitHub
+Push this repo to GitHub/GitLab/Bitbucket.
+
+#### 2) Import in Vercel
+- Vercel dashboard → **Add New Project**
+- Import this repository
+- Framework is detected as **Vite**
+
+#### 3) Set environment variables in Vercel
+- `JWT_SECRET` = a long random string
+- `FRONTEND_URL` = your Vercel app URL (optional but recommended)
+
+#### 4) Deploy
+Click deploy. Vercel will:
+- Run `npm run build`
+- Serve frontend from `dist`
+- Route `/api/*` to the serverless API
+
+#### Important backend persistence note
+- On Vercel, local file writes are not persistent.
+- This project now uses **in-memory DB fallback** on Vercel for auth/watchlist/portfolio.
+- That means user data may reset across deployments/cold starts.
+- For production persistence, connect a real DB (e.g., Supabase, Neon, MongoDB Atlas, PlanetScale).
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
